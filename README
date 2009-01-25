@@ -1,0 +1,34 @@
+The intention of this code is to proove or test the speed/performance
+of search trees. In this case, the keys are strings.
+
+My intention is to use it in an autocomplete input field but not asking to
+the server every time.
+
+There have been 2 different aproaches:
+
+ * BST: binary search tree
+  Has demonstrated a low performance, not so much in retrieve as in insertion.
+  You can pass the tests of BST if you want to compare.
+  
+  In a first implementation of BST, we detected that the creation of the nodes as 
+  prototype Objects was being expensive, so the nodes were changed to hashes "{}".
+  
+  This reduced the cost of creating nodes to a half.
+ 
+ * MST: m-ary search tree
+  The reason to try that was to reduce the navigation cost. When we are looking
+  for a character in the position p, we must navigate through the neighbours till
+  find the node of that char.
+  In the mst, each node has a hash that points to the node of that char. This 
+  implementation is suposed to be faster as a hash hit is implemented in machine
+  code in the browser, so should be faster than a script code.
+  
+The results hace shown that mst is better.
+
+Inserting 80k words in the bst costs 7 seconds.
+Inserting 80k words in the mst costs 3 seconds.
+  
+  This tests were taken in a FF 3.0.5
+  (Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.5) 
+    Gecko/2008121621 Ubuntu/8.04 (hardy) Firefox/3.0.5)
+  The computer has a Intel Core 2 Duo T5550

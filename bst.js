@@ -286,24 +286,6 @@ var BSTClear = function( obj ){
   BSTNode.hash = [];
 }
 
-var assert_equals = function( gets, expects ){
-  if( gets != expects){
-    if(gets && expects && expects.toString() == gets.toString() ){
-      //so OK
-    }else{
-      log("FAILED: Expected "+expects+" but found "+gets);
-      return;
-    }
-  }
-  log("Passed ("+gets+" equals "+expects+")");
-};
-
-var profiler = function( func, msg ){
-  var startsat = new Date();
-  func.call();
-  log("Performance of "+msg+": "+ (new Date().getTime() - startsat.getTime()));
-}
-
 var runBSTTest = function(){
 
   document.title = "Test 1";
@@ -352,17 +334,17 @@ var runBSTTest = function(){
       for( var i=0; i < size; i++){
         var x = { a: 1 };
       }
-  },"create hashs");
+  },"create "+size+" hashs");
   profiler(function(){
       for( var i=0; i < size; i++){
         var x = [ "33" ];
       }
-  },"create arrays");
+  },"create "+size+" arrays");
   profiler(function(){
       for( var i=0; i < size; i++){
         var x = BST.create( "a" );
       }
-  },"create nodes");
+  },"create "+size+" nodes");
   
   //BIGG LIST!
   BST.clear(test);
@@ -395,6 +377,4 @@ var runBSTTest = function(){
     onFailure: function(){alert("wrong");}
   });
   
-  
-  document.title = "Passed test";
 }

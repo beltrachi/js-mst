@@ -1,12 +1,18 @@
 /**
 * Implement a m-ary tree with hashes
+*
 * In each node we have all paths to all letters in spite of navigating left or right
 * Compared to BST, its the same nodes as for each letter on each position we'll have a
 * a node.
 * It can be faster as now we don't need to navigate through the neighbours to find
-* the down. Now the down will be direct in node[ch], and as it's a core method, it can be faster.
+* the down. Now the down will be direct in node[ch], and as it's a JS core method, it can be faster.
 *
-* For usage samples see the tests
+* Comments:
+*   - keys and searches are case-sensitive
+*       To "be" non-case-sensitive, convert all strings to lowercase before
+*       inserting and fetching.
+*
+* For usage samples see the tests.
 *
 * TODO:
 *   - Make MST.hash and contains() implementation not class methods but 
@@ -32,29 +38,22 @@ var MST = {
     return node;
   },
   add: function( node, key, value ){
-    //log(" Add key:"+key + " and value " +value);
     //directs to next char
     var next_ch = key[0];
     if(!next_ch || next_ch == "" ){
-      //log("Set value at ch:"+node.ch + " value "+value);
       node.value = value;
     }else{
       if(!node[next_ch]){
-        //log("create node for "+next_ch);
         node[next_ch] = MST.create( next_ch );
       }
       MST.add( node[next_ch], key.slice(1), value );
     }
   },
   get: function( node, key ){
-    //log("get "+node.ch+" key "+key);
-    //var next = key.split(1);
     var next_ch = key[0];
     if(!next_ch || next_ch == ""){
-      //log("return nodevalue");
       return node.value;
     }else{
-      //log("find node "+next_ch);
       if(node[next_ch]){
         return MST.get( node[next_ch], key.slice(1));        
       }
@@ -65,9 +64,7 @@ var MST = {
     var limit = _limit || null;
     var arr = _arr || [];
     var next_ch = key[0];
-    //log("startswith "+node+" key:"+key + " limit:"+limit+" arr:"+arr+" nextch:"+next_ch);
     if(!next_ch || next_ch == ""){
-      //log("sw calls all with node char"+node.ch);
       return MST.all( node, limit, arr);
     }else{
       if(node[next_ch]){
@@ -79,17 +76,13 @@ var MST = {
   all: function( node, _limit, _arr){
     var limit =_limit || null;
     var arr = _arr || [];
-    //log("all of "+node+" limit:"+limit+" arr:"+arr);
     if( limit != null && arr.size() == limit){
       return arr;
     }
     if(node.value)
       arr.push(node.value);
     $H(node).each(function(a){
-        //log(a);
-        //log(a[0].length);
         if(a[0].length == 1){
-          //log(""+a+" is length 1");
           MST.all( a[1], limit, arr);
         }
     });
@@ -102,7 +95,6 @@ var MST = {
     var arr = [];
     if(MST.hash[ch]){
       MST.hash[ch].each(function( n ){
-          //log("node "+n.ch+" and text:"+text);
           MST.startsWith( n, text.slice(1), limit, arr);
       });
       return arr;
@@ -112,7 +104,7 @@ var MST = {
   },
   clear: function( node ){
     MST.hash = {};
-    //No way to reset node;
+    //No way to reset node?
     node = MST.create( "" );
   },
   //FIXME: its not finished as values are managed as strings

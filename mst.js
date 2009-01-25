@@ -1,17 +1,26 @@
 /**
 * Implement a m-ary tree with hashes
 *
-* In each node we have all paths to all letters in spite of navigating left or right
-* Compared to BST, its the same nodes as for each letter on each position we'll have a
-* a node.
-* It can be faster as now we don't need to navigate through the neighbours to find
-* the down. Now the down will be direct in node[ch], and as it's a JS core method, it can be faster.
+* In each node we have all paths to all letters in spite of navigating left 
+* or right. Compared to BST, its the same nodes as for each letter on each  
+* position we'll have a node.
+* It can be faster as now we don't need to navigate through the neighbours 
+* to find the down. Now the down will be direct in node[ch], and as it's a
+* JS core method, it should be faster.
 *
 * Comments:
 *   - keys and searches are case-sensitive
 *       To "be" non-case-sensitive, convert all strings to lowercase before
 *       inserting and fetching.
-*
+*   - Speed comments:
+*       The speed of adding and fetching, based on 
+*         n:"number of entries"
+*         m:"average key length"
+*       Costs seem to be: 
+*         add: O(m)
+*         get: O(m)
+*       Its recomended to use the limit parameter in the
+*       functions that return collections, as startsWith, contains or all.
 * For usage samples see the tests.
 *
 * TODO:
@@ -20,16 +29,22 @@
 */
 
 //Prototype required
-
-var MST = {
+var MST = Class.create({
+  initialize: function(_params){
+    var params = _params || {};
+    this.useContains = params.useContains || this.useContains == true;
+    this.hash = {};
+    this.root = this.create("");
+  },
+  
   hash: {},
   
   useContains: false,
   
   create: function( _ch ){
     var node = { ch: _ch };
-    if( MST.useContains ){
-      var h = MST.hash;
+    if( this.useContains ){
+      var h = this.hash;
       if(!h[_ch])
         h[_ch] = [node];
       else
@@ -37,43 +52,63 @@ var MST = {
     }
     return node;
   },
-  add: function( node, key, value ){
+  
+  add: function( key, value ){
+    this._add( this.root, key, value );
+  },
+  
+  _add: function( node, key, value ){
     //directs to next char
     var next_ch = key[0];
     if(!next_ch || next_ch == "" ){
       node.value = value;
     }else{
       if(!node[next_ch]){
-        node[next_ch] = MST.create( next_ch );
+        node[next_ch] = this.create( next_ch );
       }
-      MST.add( node[next_ch], key.slice(1), value );
+      this._add( node[next_ch], key.slice(1), value );
     }
   },
-  get: function( node, key ){
+  
+  get: function( key ){
+    return this._get( this.root, key );
+  },
+  
+  _get: function( node, key ){
     var next_ch = key[0];
     if(!next_ch || next_ch == ""){
       return node.value;
     }else{
       if(node[next_ch]){
-        return MST.get( node[next_ch], key.slice(1));        
+        return this._get( node[next_ch], key.slice(1));        
       }
     }
     return null;
   },
-  startsWith: function( node, key, _limit, _arr){
+  
+  startsWith: function( key, _limit, _arr){
+    return this._startsWith( this.root, key, _limit, _arr);
+  },
+  
+  _startsWith: function( node, key, _limit, _arr){
     var limit = _limit || null;
     var arr = _arr || [];
     var next_ch = key[0];
     if(!next_ch || next_ch == ""){
-      return MST.all( node, limit, arr);
+      return this._all( node, limit, arr);
     }else{
       if(node[next_ch]){
-        return MST.startsWith( node[next_ch], key.slice(1), limit, arr);
+        return this._startsWith( node[next_ch], key.slice(1), limit, arr);
       }
     }
     return [];
   },
-  all: function( node, _limit, _arr){
+  
+  all: function( _limit, _arr){
+    return this._all( this.root, _limit, _arr);
+  },
+  
+  _all: function( node, _limit, _arr){
     var limit =_limit || null;
     var arr = _arr || [];
     if( limit != null && arr.size() == limit){
@@ -83,42 +118,47 @@ var MST = {
       arr.push(node.value);
     $H(node).each(function(a){
         if(a[0].length == 1){
-          MST.all( a[1], limit, arr);
+          this._all( a[1], limit, arr);
         }
-    });
+    }, this);
     return arr;
   },
-  contains: function( node, text, _limit){
-    if (!MST.useContains) throw ("contains method not in use");
+  
+  contains: function( text, _limit){
+    if (!this.useContains) throw ("contains method not in use");
     var limit = _limit || null;
     var ch = text[0];
     var arr = [];
-    if(MST.hash[ch]){
-      MST.hash[ch].each(function( n ){
-          MST.startsWith( n, text.slice(1), limit, arr);
-      });
+    if(this.hash[ch]){
+      this.hash[ch].each(function( n ){
+          this._startsWith( n, text.slice(1), limit, arr);
+      }, this);
       return arr;
     }else{
       return [];
     }
   },
-  clear: function( node ){
-    MST.hash = {};
-    //No way to reset node?
-    node = MST.create( "" );
+  
+  clear: function(){
+    this.hash = {};
+    this.root = this.create("");
   },
   //FIXME: its not finished as values are managed as strings
-  toJSON: function( node ){
+  toJSON: function(){
+    return this._toJSON( this.root ); 
+  },
+  
+  _toJSON: function( node ){
     var p = [];
     $H(node).each(function(d){
       if(d[0].length==1){
         //It's a node
-        p.push(d[0]+":"+MST.toJSON( d[1] ));
+        p.push(d[0]+":"+this._toJSON( d[1] ));
       }else{
         p.push(d[0]+":'"+d[1]+"'");
       }
-    });
+    },this);
     return "{"+p.join(",")+"}";
   }
-}
+});
 

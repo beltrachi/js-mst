@@ -1,3 +1,4 @@
+//FIXME: Not tested on Internet Explorer
 //Class methods
 var BST = {
   

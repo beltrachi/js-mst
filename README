@@ -23,7 +23,7 @@ There have been 2 different aproaches:
   implementation is suposed to be faster as a hash hit is implemented in machine
   code in the browser, so should be faster than a script code.
   
-The results hace shown that mst is better.
+The results have shown that mst is better.
 
 Inserting 80k words in the bst costs 7 seconds.
 Inserting 80k words in the mst costs 3 seconds.
@@ -32,3 +32,13 @@ Inserting 80k words in the mst costs 3 seconds.
   (Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.5) 
     Gecko/2008121621 Ubuntu/8.04 (hardy) Firefox/3.0.5)
   The computer has a Intel Core 2 Duo T5550
+  
+The tests on Internet Explorer 6 were done in a virtualized installation
+on the same machine as FF3. Some code adaptions were made.
+The results were really slow. Possibly afected by the virtualization.
+
+As a sample:
+  Adding 8k words (not 80k) in the mst cost 48 seconds. See that its a tenth of 
+  the size of the test on FF and the results are really worse. 
+  Pending a test on a non virtualized environment.
+

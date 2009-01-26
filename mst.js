@@ -59,7 +59,7 @@ var MST = Class.create({
   
   _add: function( node, key, value ){
     //directs to next char
-    var next_ch = key[0];
+    var next_ch = key.charAt(0);
     if(!next_ch || next_ch == "" ){
       node.value = value;
     }else{
@@ -75,7 +75,7 @@ var MST = Class.create({
   },
   
   _get: function( node, key ){
-    var next_ch = key[0];
+    var next_ch = key.charAt(0);
     if(!next_ch || next_ch == ""){
       return node.value;
     }else{
@@ -93,7 +93,7 @@ var MST = Class.create({
   _startsWith: function( node, key, _limit, _arr){
     var limit = _limit || null;
     var arr = _arr || [];
-    var next_ch = key[0];
+    var next_ch = key.charAt(0);
     if(!next_ch || next_ch == ""){
       return this._all( node, limit, arr);
     }else{
@@ -127,7 +127,7 @@ var MST = Class.create({
   contains: function( text, _limit){
     if (!this.useContains) throw ("contains method not in use");
     var limit = _limit || null;
-    var ch = text[0];
+    var ch = text.charAt(0);
     var arr = [];
     if(this.hash[ch]){
       this.hash[ch].each(function( n ){

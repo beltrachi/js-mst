@@ -23,9 +23,6 @@
 *       functions that return collections, as startsWith, contains or all.
 * For usage samples see the tests.
 *
-* TODO:
-*   - Make MST.hash and contains() implementation not class methods but 
-*     instance data and methods to allow more than one MST usage at a time
 */
 
 //Prototype required

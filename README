@@ -37,8 +37,24 @@ The tests on Internet Explorer 6 were done in a virtualized installation
 on the same machine as FF3. Some code adaptions were made.
 The results were really slow. Possibly afected by the virtualization.
 
-As a sample:
+For instance:
   Adding 8k words (not 80k) in the mst cost 48 seconds. See that its a tenth of 
   the size of the test on FF and the results are really worse. 
   Pending a test on a non virtualized environment.
 
+=== Giving a chance to Google Closure Compiler
+
+Recently Google has released a javascript suite which includes a javascript 
+compiler which reduces the code and rewrites the code reducing the size and doing
+some code optimizations.
+
+URL: http://code.google.com/closure/
+
+Applying the compiler on the MST source needed some rewritting but it finally passed
+the tests.
+
+The results have been disapointing as has not been any important performance 
+improvement even aplying the advanced optimizations.
+
+Probably the code cannot be optimized any more and the time spent is what it needs
+to do the work expected.

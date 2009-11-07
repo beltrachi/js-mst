@@ -25,11 +25,17 @@
 *
 */
 
-//Prototype required
-var MST = Class.create({
+/**
+ * @constructor
+ */
+function MST(){
+    this.initialize.apply(this, arguments);
+}
+
+var definitions = {
   initialize: function(_params){
     var params = _params || {};
-    this.useContains = params.useContains || this.useContains == true;
+    this.useContains = params["useContains"] || this.useContains == true;
     this.hash = {};
     this.root = this.create("");
   },
@@ -113,11 +119,9 @@ var MST = Class.create({
     }
     if(node.value)
       arr.push(node.value);
-    $H(node).each(function(a){
-        if(a[0].length == 1){
-          this._all( a[1], limit, arr);
-        }
-    }, this);
+    for(var k in node){
+        if(k.length==1) this._all( node[k], limit, arr);
+    }
     return arr;
   },
   
@@ -127,10 +131,11 @@ var MST = Class.create({
     var ch = text.charAt(0);
     var arr = [];
     if(this.hash[ch]){
-      this.hash[ch].each(function( n ){
-          this._startsWith( n, text.slice(1), limit, arr);
-      }, this);
-      return arr;
+        var len = this.hash[ch].length;
+        for( var i=0; i < len; i++ ){
+            this._startsWith( this.hash[ch][i], text.slice(1), limit, arr ); 
+        }
+        return arr;
     }else{
       return [];
     }
@@ -139,23 +144,18 @@ var MST = Class.create({
   clear: function(){
     this.hash = {};
     this.root = this.create("");
-  },
-  //FIXME: its not finished as values are managed as strings
-  toJSON: function(){
-    return this._toJSON( this.root ); 
-  },
-  
-  _toJSON: function( node ){
-    var p = [];
-    $H(node).each(function(d){
-      if(d[0].length==1){
-        //It's a node
-        p.push(d[0]+":"+this._toJSON( d[1] ));
-      }else{
-        p.push(d[0]+":'"+d[1]+"'");
-      }
-    },this);
-    return "{"+p.join(",")+"}";
   }
-});
+};
+for( var key in definitions ){
+  MST.prototype[key] = definitions[key];
+}
+
+//Exposing methods
+window["MST"] = MST;
+MST.prototype['get'] = MST.prototype.get;
+MST.prototype['add'] = MST.prototype.add;
+MST.prototype['all'] = MST.prototype.all;
+MST.prototype['startsWith'] = MST.prototype.startsWith;
+MST.prototype['contains'] = MST.prototype.contains;
+MST.prototype['clear'] = MST.prototype.clear;
 
